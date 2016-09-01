@@ -1,0 +1,54 @@
+FROM python:3.4
+
+MAINTAINER Jeff Zaremba <jzaremba@gmail.com>
+
+# SIMA dependencies
+RUN apt-get update -qq && apt-get install -qq \
+    python-dev \
+    libatlas-base-dev \
+    libatlas-dev \
+    libgeos-dev \
+    liblapack-dev \
+    && apt-get clean
+
+# Required for building C libraries, must be installed first
+RUN pip install Cython
+RUN pip install numpy
+
+# Install required SIMA dependencies
+RUN pip install \
+    future \
+    pillow \
+    scikit-image \
+    scikit-learn \
+    scipy \
+    shapely
+
+# ROIBuddy dependencies
+RUN apt-get update -qq && apt-get install -qq \
+    python-qwt5-qt4 \
+    python-sip \
+    python-qt4 \
+    && apt-get clean
+
+ENV PYTHONPATH "/usr/share:/usr/lib/python2.7/dist-packages:$PATH"
+
+RUN rm -r /usr/lib/python2.7/dist-packages/numpy*
+
+RUN pip install guidata
+
+RUN pip install guiqwt
+
+# Packages required for building
+RUN pip install \
+    twine \
+    wheel
+
+RUN mkdir /code
+WORKDIR /code
+
+COPY Makefile .
+COPY sima_build_script.sh .
+COPY roibuddy_build_script.sh .
+
+CMD bash

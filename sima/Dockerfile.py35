@@ -1,5 +1,7 @@
 FROM python:3.5
 
+MAINTAINER Jeff Zaremba <jzaremba@gmail.com>
+
 RUN apt-get update -qq && apt-get install -qq python-dev libatlas-dev libatlas-base-dev liblapack-dev libgeos-dev libhdf5-dev
 
 RUN pip install Cython
@@ -11,6 +13,6 @@ RUN pip install scipy scikit-image scikit-learn shapely pillow future h5py picos
 RUN mkdir /code
 WORKDIR /code
 
-COPY build_script.sh .
+COPY sima_build_script.sh .
 
 CMD bash
